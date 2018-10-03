@@ -25,6 +25,8 @@ function buscarFilmes(filmePesquisar){
 
         `;*/
 
+
+teste.teste
        mostrarFilme += ` 
     <div class="col-sm-6 col-md-4">
             <div class="thumbmail">
