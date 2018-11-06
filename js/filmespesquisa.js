@@ -8,26 +8,8 @@ function buscarFilmes(filmePesquisar){
     var mostrarFilme= '';
 
      for(var i=0; i<filmes.length;i++){
-       /* mostrarFilme += `
-
-        <div class="col-sm-6 col-md-4">
-
-            <div class="thumbmail">
-                <img src="https://image.tmdb.org/t/p/w500${filmes[i].poster_path}" class="img-thumbmail">
-                <h4>${filmes[i].vote_average}</h4>
-                <h4>${filmes[i].title}</h4>
-               <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Assistir</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Assistido</button>
-                        </div>
-            </div>
-        </div>
-
-        `;*/
-
-
-
-       mostrarFilme += ` 
+     
+mostrarFilme += ` 
     <div class="col-sm-6 col-md-4">
             <div class="thumbmail">
             
@@ -36,17 +18,14 @@ function buscarFilmes(filmePesquisar){
                      <p class="card-text">${filmes[i].title}</p>
                      <h4>${filmes[i].vote_average}</h4>
                        <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Assistir</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Assistido</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAssistitrFilmesPesquisados">Assistir</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAssistidoFilmesPesquisados">Assistido</button>
                         </div>
               
 
             </div>
         </div>
          `;
-
-
-
 
     }
     document.getElementById('filmes').innerHTML = mostrarFilme;
