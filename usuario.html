@@ -56,5 +56,50 @@
   <script src="js/main.js"></script>
   <script src="js/filmespesquisa.js"></script>
 
+  <script>
+  
+
+  function Excluir(i, id){
+      var codigo = filmesWeek[i].id
+      var tbFilmesE = localStorage.getItem("tbFilmes");
+      tbFilmesE = JSON.parse(tbFilmesE);
+      
+      if (tbFilmesE == null) {
+          alert ("LocalStorage vazio");
+          return true;
+      }
+    
+      var filme = BuscaFilme("Codigo", codigo);
+      var indice_selecionado = eliminar
+
+      if (filme == null) {
+        alert("Filme não Favoritado.");
+        return true;
+      } else {
+        
+          tbFilmesE.splice(indice_selecionado, 1);
+          localStorage.setItem("tbFilmes", JSON.stringify(tbFilmesE));
+          alert("Filme removido!");
+          return true;
+          }
+      
+        function BuscaFilme(propriedade, valor)
+        {
+          var filme = null;
+            for (var item in tbFilmesE) {
+              var i = JSON.parse(tbFilmesE[item]);
+              if (i[propriedade] == valor){
+                filme = i;
+                eliminar = item;
+                //debugger;
+              }
+            }
+            return filme, eliminar;
+            }
+  }
+
+  
+  </script>
+
 </BODY>
 </HTML>

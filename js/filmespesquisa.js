@@ -103,20 +103,19 @@ function ListarE()
 
      for (var i in tbFilmes) {
       var filme = JSON.parse(tbFilmes[i]);
-        $("#listaFavorito tbody").append("<tr >" +
-                    "   <td>"+filme.Codigo+"</td>" +
+        $("#listaFavorito tbody").append("<tr>" +
+                    "   <td>"+filme.Codigo+"<span class='codigo' style='display: none;'>"+filme.Codigo+"</span></td>" +
                     "   <td>"+filme.Titulo+"</td>" +
                     "   <td>"+filme.OriginalTitulo+"</td>" +
-					"	<td> <button type='button' class='btn btn-danger' > "+
-					"   <img src='https://png.icons8.com/metro/18/ffffff/cancel.png' class='btnExcluir'>"+
+					"	<td> <button type='button' class='btn btn-danger btnExcluir' > "+
+					"   <img src='https://png.icons8.com/metro/18/ffffff/cancel.png'>"+
 					"	</button>"+
 					"	</td>"+ "</tr>");
 				
      }
 
 }
-function Apagar(i, id)
-{
+function Apagar(i, id) {
   var codigo = filmes[i].id
   var tbFilmesE = localStorage.getItem("tbFilmes");
   tbFilmesE = JSON.parse(tbFilmesE);
@@ -129,18 +128,7 @@ function Apagar(i, id)
   var filme = BuscaFilme("Codigo", codigo);
   var indice_selecionado = eliminar
 
-  if (filme == null) {
-    alert("Filme não Favoritado.");
-    return;
-  } else {
-      //alert ("Codigo: " + codigo);
-      tbFilmesE.splice(indice_selecionado, 1);
-      localStorage.setItem("tbFilmes", JSON.stringify(tbFilmesE));
-      alert("Filme removido.");
-      return true;
-      }
-  
-    function BuscaFilme(propriedade, valor)
+  function BuscaFilme(propriedade, valor)
     {
       var filme = null;
         for (var item in tbFilmesE) {
@@ -152,5 +140,17 @@ function Apagar(i, id)
           }
         }
         return filme, eliminar;
-        }
+    }
 }
+
+$('.btnExcluir').click(function(){
+  var filmesAtuais = JSON.parse(localStorage.getItem('tbFilmes'));
+  var codigoApagar = $(this).parents('tr').find('.codigo').text();
+  var filmesNovos = filmesAtuais.filter(function(item){
+    var jsonAqui = JSON.parse(item);
+    return jsonAqui.Codigo != parseInt(codigoApagar);
+  });
+  $(this).parents('tr').remove();
+  var jsonSalvar = JSON.stringify(filmesNovos);
+  localStorage.setItem('tbFilmes', jsonSalvar);
+});
