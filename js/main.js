@@ -1,15 +1,6 @@
 
 var filmesWeek = '';
 var mostrarFilmeWeek= '';
-/*function irParaIndex() {
-	
-//	alert(filmePesquisar)
-	var irPara = document.getElementById('btnVoltarIndex').value
-
-	document.getElementById('filmesWeek').innerHTML = "buscarFilmesWeek()";
-
-	//window.location.replace('file:///C:/Users/Administrador/Documents/FACULDADE/5%20semestre/Diogo/Trabalho/cinema/filmespesquisa.html')
-}*/
 
 function buscarFilmesWeek(){
 
@@ -17,7 +8,7 @@ axios.get('https://api.themoviedb.org/3/trending/all/week?api_key=b3d1631a057dc6
   .then(function (response) {
 //    console.log(response);
     filmesWeek = response.data.results;
-    
+   
 
     for(var i=0; i<filmesWeek.length;i++){
     	mostrarFilmeWeek += `
@@ -29,8 +20,8 @@ axios.get('https://api.themoviedb.org/3/trending/all/week?api_key=b3d1631a057dc6
 					
     				 <p class="card-text">${filmesWeek[i].title}</p>
     					<div class="btn-group">
-                      		 <button onclick="Salvar(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-primary">Assistir</button>
-							 <button onclick="Apagar(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-success">Assistido</button>
+                      		 <button onclick="Adicionar(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-primary">Assistir</button>
+							 <button onclick="Excluir(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-success">Assistido</button>
                     	</div>
               
 
@@ -47,26 +38,18 @@ axios.get('https://api.themoviedb.org/3/trending/all/week?api_key=b3d1631a057dc6
 
  }
  //chamada do metodo para carregar assim que a pagina for aberta
- buscarFilmesWeek();
+buscarFilmesWeek();
 
-//document.getElementById('formulario').addEventListener('submit', pesquisarFilme);
+document.getElementById('formulario').addEventListener('submit', pesquisarFilme);
 
-function pesquisarFilme(e) {
-    var filmePesquisar = document.getElementById('pesquisar').value
+Listar();
 
-    var filmesSemanaContainer = document.getElementById('filmesSemana');
-    filmesSemanaContainer.innerHTML = ""
-    buscarFilmes(filmePesquisar);
-    e.preventDefault();
-}
-
-
- ListarE();
-
-function Salvar(i, id){
-  var codigo = filmesWeek[i].id;
-  var titulo = filmesWeek[i].title;
-  var origtitulo = filmesWeek[i].original_title;
+function Adicionar(i, id)
+{
+  var codigo = filmesWeek[i].id
+  var titulo = filmesWeek[i].title
+  var origtitulo = filmesWeek[i].original_title
+  var indice_selecionado = -1;
 
   var tbFilmes = localStorage.getItem("tbFilmes"); // Recupera os dados armazenados
 
@@ -77,7 +60,7 @@ function Salvar(i, id){
 
   var filme = GetFilme("Codigo", codigo);
 
-    if (filme != null){
+    if (filme != null) {
       alert("Filme já cadastrado.");
       return;
     }
@@ -96,7 +79,8 @@ function Salvar(i, id){
     alert("Filme adicionado.");
     return true;
 
-    function GetFilme(propriedade, valor){
+  function GetFilme(propriedade, valor)
+  {
     var filme = null;
         for (var item in tbFilmes) {
             var i = JSON.parse(tbFilmes[item]);
@@ -107,7 +91,7 @@ function Salvar(i, id){
   }
 }
 
-function ListarE()
+function Listar()
 {
     var tbFilmes = localStorage.getItem("tbFilmes");
     tbFilmes = JSON.parse(tbFilmes);
@@ -118,6 +102,7 @@ function ListarE()
                 "<th >#</th>"+
                 "<th >Filme</th>"+
                 "<th >Diretor</th>"+
+				"<th >Retirar da Lista</th>"+
                 "</tr>"+
             "</thead>"+ 
       "<tbody>"+
@@ -130,12 +115,15 @@ function ListarE()
                     "   <td>"+filme.Codigo+"</td>" +
                     "   <td>"+filme.Titulo+"</td>" +
                     "   <td>"+filme.OriginalTitulo+"</td>" +
-                    "</tr>");
+					"	<td> <button type='button' class='btn btn-danger' onclick='Excluir(${i}, ${filmesWeek[i].id})'>"+
+					"   <img src='https://png.icons8.com/metro/18/ffffff/cancel.png' class='btnExcluir'>"+
+					"	</button>"+
+					"	</td>"+
+                    
+					"</tr>");
      }
 }
-
-
-function Apagar(i, id)
+function Excluir(i, id)
 {
   var codigo = filmesWeek[i].id
   var tbFilmesE = localStorage.getItem("tbFilmes");
@@ -143,20 +131,20 @@ function Apagar(i, id)
   
   if (tbFilmesE == null) {
       alert ("LocalStorage vazio");
-      return;
+      return true;
   }
  
   var filme = BuscaFilme("Codigo", codigo);
   var indice_selecionado = eliminar
 
-  if (filme = null) {
+  if (filme == null) {
     alert("Filme não Favoritado.");
-    return;
+    return true;
   } else {
-      //alert ("Codigo: " + codigo);
+    
       tbFilmesE.splice(indice_selecionado, 1);
       localStorage.setItem("tbFilmes", JSON.stringify(tbFilmesE));
-      alert("Filme  " + codigo + "  Assistido. Removido do LocalStorage.");
+      alert("Filme removido!");
       return true;
       }
   
@@ -174,14 +162,21 @@ function Apagar(i, id)
         return filme, eliminar;
         }
 }
- //chamada do metodo para carregar assim que a pagina for aberta
- //assistirFilmes();	
- pesquisarFilme(e);
+
+function pesquisarFilme(q)
+{
+    var filmePesquisar = document.getElementById('pesquisar').value
+
+    var filmesSemanaContainer = document.getElementById('filmesSemana');
+    filmesSemanaContainer.innerHTML = ""
+    buscarFilmes(filmePesquisar);
+    q.preventDefault();
+}
 
 
+function irParaPesquisa()
+{
+  var filmePesquisar = document.getElementById('pesquisar').value
+  buscarFilmes(filmePesquisar);
 
-
-
-
-
-
+}
