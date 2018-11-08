@@ -18,8 +18,8 @@ mostrarFilme += `
 					
     				 <p class="card-text">${filmes[i].title}</p>
     					<div class="btn-group">
-                      		 <button onclick="Salvar(${i}, ${filmes[i].id})" type="submit" class="btn btn-sm btn-primary">Assistir</button>
-							 <button onclick="Apagar(${i}, ${filmes[i].id})" type="submit" class="btn btn-sm btn-success">Assistido</button>
+                      		 <button onclick="SalvarFilmesPesquisados(${i}, ${filmes[i].id})" type="submit" class="btn btn-sm btn-primary">Assistir</button>
+							 <button onclick="Excluir(${i}, ${filmes[i].id})" type="submit" class='btn btn-danger btnExcluir'>Assistido</button>
                     	</div>
               
 
@@ -38,44 +38,44 @@ mostrarFilme += `
 
 buscarFilmes();
 
-ListarE();
-function Salvar(i, id){
+ListarFilmesPesquisados();
+function SalvarFilmesPesquisados(i, id){
   var codigo = filmes[i].id;
   var titulo = filmes[i].title
-  var origtitulo = filmes[i].original_title
+  var tituloOriginal = filmes[i].original_title
 
-  var tbFilmes = localStorage.getItem("tbFilmes"); // Recupera os dados armazenados
+  var storageLocal = localStorage.getItem("storageLocal"); 
 
-  tbFilmes = JSON.parse(tbFilmes); // Converte string para objeto
+  storageLocal = JSON.parse(storageLocal); 
 
-  if (tbFilmes == null) // Caso não haja conteúdo, iniciaremos um vetor vazio para popular
-    tbFilmes = [];
+  if (storageLocal == null) 
+    storageLocal = [];
 
   var filme = GetFilme("Codigo", codigo);
 
     if (filme != null){
-      alert("Filme já cadastrado.");
+      alert("Filme já cadastrado em sua lista de Favoritos.");
       return;
     }
 
     var filme = JSON.stringify({
       Codigo   : codigo,
       Titulo   : titulo,
-      OriginalTitulo    : origtitulo
+      OriginalTitulo    : tituloOriginal
 
     });
 
-    tbFilmes.push(filme);
+    storageLocal.push(filme);
 
-    localStorage.setItem("tbFilmes", JSON.stringify(tbFilmes));
+    localStorage.setItem("storageLocal", JSON.stringify(storageLocal));
 
-    alert("Filme adicionado.");
+    alert("Filme adicionado em sua lista de Favoritos.");
     return true;
 
     function GetFilme(propriedade, valor){
     var filme = null;
-        for (var item in tbFilmes) {
-            var i = JSON.parse(tbFilmes[item]);
+        for (var item in storageLocal) {
+            var i = JSON.parse(storageLocal[item]);
             if (i[propriedade] == valor)
                 filme = i;
         }
@@ -83,10 +83,10 @@ function Salvar(i, id){
   }
 }
 
-function ListarE()
+function ListarFilmesPesquisados()
 {
-    var tbFilmes = localStorage.getItem("tbFilmes");
-    tbFilmes = JSON.parse(tbFilmes);
+    var storageLocal = localStorage.getItem("storageLocal");
+    storageLocal = JSON.parse(storageLocal);
     $("#listaFavorito").html("");
     $("#listaFavorito").html(
        "<thead>"+
@@ -101,8 +101,8 @@ function ListarE()
       "</tbody>"
       );
 
-     for (var i in tbFilmes) {
-      var filme = JSON.parse(tbFilmes[i]);
+     for (var i in storageLocal) {
+      var filme = JSON.parse(storageLocal[i]);
         $("#listaFavorito tbody").append("<tr>" +
                     "   <td>"+filme.Codigo+"<span class='codigo' style='display: none;'>"+filme.Codigo+"</span></td>" +
                     "   <td>"+filme.Titulo+"</td>" +
@@ -115,12 +115,12 @@ function ListarE()
      }
 
 }
-function Apagar(i, id) {
+function ApagarFilmesPesquisados(i, id) {
   var codigo = filmes[i].id
-  var tbFilmesE = localStorage.getItem("tbFilmes");
-  tbFilmesE = JSON.parse(tbFilmesE);
+  var storageLocalE = localStorage.getItem("storageLocal");
+  storageLocalE = JSON.parse(storageLocalE);
   
-  if (tbFilmesE == null) {
+  if (storageLocalE == null) {
       alert ("LocalStorage vazio");
       return;
   }
@@ -131,8 +131,8 @@ function Apagar(i, id) {
   function BuscaFilme(propriedade, valor)
     {
       var filme = null;
-        for (var item in tbFilmesE) {
-          var i = JSON.parse(tbFilmesE[item]);
+        for (var item in storageLocalE) {
+          var i = JSON.parse(storageLocalE[item]);
           if (i[propriedade] == valor){
             filme = i;
             eliminar = item;
@@ -144,13 +144,13 @@ function Apagar(i, id) {
 }
 
 $('.btnExcluir').click(function(){
-  var filmesAtuais = JSON.parse(localStorage.getItem('tbFilmes'));
-  var codigoApagar = $(this).parents('tr').find('.codigo').text();
+  var filmesAtuais = JSON.parse(localStorage.getItem('storageLocal'));
+  var codigoApagarFilmesPesquisados = $(this).parents('tr').find('.codigo').text();
   var filmesNovos = filmesAtuais.filter(function(item){
     var jsonAqui = JSON.parse(item);
-    return jsonAqui.Codigo != parseInt(codigoApagar);
+    return jsonAqui.Codigo != parseInt(codigoApagarFilmesPesquisados);
   });
   $(this).parents('tr').remove();
-  var jsonSalvar = JSON.stringify(filmesNovos);
-  localStorage.setItem('tbFilmes', jsonSalvar);
+  var jsonSalvarFilmesPesquisados = JSON.stringify(filmesNovos);
+  localStorage.setItem('storageLocal', jsonSalvarFilmesPesquisados);
 });

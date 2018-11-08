@@ -20,8 +20,8 @@ axios.get('https://api.themoviedb.org/3/trending/all/week?api_key=b3d1631a057dc6
 					
     				 <p class="card-text">${filmesWeek[i].title}</p>
     					<div class="btn-group">
-                      		 <button onclick="Adicionar(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-primary">Assistir</button>
-							 <button onclick="Excluir(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-success">Assistido</button>
+                      		 <button onclick="SalvarFilmesWeek(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-primary">Assistir</button>
+							 <button onclick="ExcluirFilmesWeek(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-success">Assistido</button>
                     	</div>
               
 
@@ -40,29 +40,28 @@ axios.get('https://api.themoviedb.org/3/trending/all/week?api_key=b3d1631a057dc6
  //chamada do metodo para carregar assim que a pagina for aberta
 buscarFilmesWeek();
 
-$('#formulario').submit(pesquisarFilme);
-// document.getElementById('formulario').addEventListener('submit', pesquisarFilme);
+//$('#formulario').submit(pesquisarFilme);
+ document.getElementById('formulario').addEventListener('submit', pesquisarFilme);
 
-Listar();
+ListarFilmesWeek();
 
-function Adicionar(i, id)
+function SalvarFilmesWeek(i, id)
 {
   var codigo = filmesWeek[i].id
   var titulo = filmesWeek[i].title
   var origtitulo = filmesWeek[i].original_title
   var indice_selecionado = -1;
 
-  var tbFilmes = localStorage.getItem("tbFilmes"); // Recupera os dados armazenados
+  var storageLocal = localStorage.getItem("storageLocal"); 
 
-  tbFilmes = JSON.parse(tbFilmes); // Converte string para objeto
-
-  if (tbFilmes == null) // Caso não haja conteúdo, iniciaremos um vetor vazio para popular
-    tbFilmes = [];
+  storageLocal = JSON.parse(storageLocal);
+  if (storageLocal == null) 
+    storageLocal = [];
 
   var filme = GetFilme("Codigo", codigo);
 
     if (filme != null) {
-      alert("Filme já cadastrado.");
+      alert("Filme já cadastrado em sua lista de Favoritos.");
       return;
     }
 
@@ -73,18 +72,18 @@ function Adicionar(i, id)
 
     });
 
-    tbFilmes.push(filme);
+    storageLocal.push(filme);
 
-    localStorage.setItem("tbFilmes", JSON.stringify(tbFilmes));
+    localStorage.setItem("storageLocal", JSON.stringify(storageLocal));
 
-    alert("Filme adicionado.");
+    alert("Filme adicionado em Favoritos.");
     return true;
 
   function GetFilme(propriedade, valor)
   {
     var filme = null;
-        for (var item in tbFilmes) {
-            var i = JSON.parse(tbFilmes[item]);
+        for (var item in storageLocal) {
+            var i = JSON.parse(storageLocal[item]);
             if (i[propriedade] == valor)
                 filme = i;
         }
@@ -92,10 +91,10 @@ function Adicionar(i, id)
   }
 }
 
-function Listar()
+function ListarFilmesWeek()
 {
-    var tbFilmes = localStorage.getItem("tbFilmes");
-    tbFilmes = JSON.parse(tbFilmes);
+    var storageLocal = localStorage.getItem("storageLocal");
+    storageLocal = JSON.parse(storageLocal);
     $("#listaFavorito").html("");
     $("#listaFavorito").html(
        "<thead>"+
@@ -110,28 +109,28 @@ function Listar()
       "</tbody>"
       );
 
-     for (var i in tbFilmes) {
-      var filme = JSON.parse(tbFilmes[i]);
+     for (var i in storageLocal) {
+      var filme = JSON.parse(storageLocal[i]);
         $("#listaFavorito tbody").append("<tr>" +
                     "   <td>"+filme.Codigo+"</td>" +
                     "   <td>"+filme.Titulo+"</td>" +
                     "   <td>"+filme.OriginalTitulo+"</td>" +
-					"	<td> <button type='button' class='btn btn-danger' onclick='Excluir(${i}, ${filmesWeek[i].id})'>"+
-					"   <img src='https://png.icons8.com/metro/18/ffffff/cancel.png' class='btnExcluir'>"+
+					"	<td> <button type='button' class='btn btn-danger' onclick='ExcluirFilmesWeek(${i}, ${filmesWeek[i].id})'>"+
+					"   <img src='https://png.icons8.com/metro/18/ffffff/cancel.png' class='btnExcluirFilmesWeek'>"+
 					"	</button>"+
 					"	</td>"+
                     
 					"</tr>");
      }
 }
-function Excluir(i, id)
+function ExcluirFilmesWeek(i, id)
 {
   var codigo = filmesWeek[i].id
-  var tbFilmesE = localStorage.getItem("tbFilmes");
-  tbFilmesE = JSON.parse(tbFilmesE);
+  var storageLocalE = localStorage.getItem("storageLocal");
+  storageLocalE = JSON.parse(storageLocalE);
   
-  if (tbFilmesE == null) {
-      alert ("LocalStorage vazio");
+  if (storageLocalE == null) {
+      alert ("");
       return true;
   }
  
@@ -139,21 +138,21 @@ function Excluir(i, id)
   var indice_selecionado = eliminar
 
   if (filme == null) {
-    alert("Filme não Favoritado.");
+    alert("");
     return true;
   } else {
     
-      tbFilmesE.splice(indice_selecionado, 1);
-      localStorage.setItem("tbFilmes", JSON.stringify(tbFilmesE));
-      alert("Filme removido!");
+      storageLocalE.splice(indice_selecionado, 1);
+      localStorage.setItem("storageLocal", JSON.stringify(storageLocalE));
+      alert("Filme removido dos Favoritos!");
       return true;
       }
   
     function BuscaFilme(propriedade, valor)
     {
       var filme = null;
-        for (var item in tbFilmesE) {
-          var i = JSON.parse(tbFilmesE[item]);
+        for (var item in storageLocalE) {
+          var i = JSON.parse(storageLocalE[item]);
           if (i[propriedade] == valor){
             filme = i;
             eliminar = item;
