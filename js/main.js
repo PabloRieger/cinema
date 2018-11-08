@@ -20,7 +20,7 @@ axios.get('https://api.themoviedb.org/3/trending/all/week?api_key=b3d1631a057dc6
 					
     				 <p class="card-text">${filmesWeek[i].title}</p>
     					<div class="btn-group">
-                      		 <button onclick="SalvarFilmesWeek(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-primary">Assistir</button>
+                      		 <button onclick="AdicionarFilmesWeek(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-primary">Assistir</button>
 							 <button onclick="ExcluirFilmesWeek(${i}, ${filmesWeek[i].id})" type="submit" class="btn btn-sm btn-success">Assistido</button>
                     	</div>
               
@@ -40,35 +40,35 @@ axios.get('https://api.themoviedb.org/3/trending/all/week?api_key=b3d1631a057dc6
  //chamada do metodo para carregar assim que a pagina for aberta
 buscarFilmesWeek();
 
-//$('#formulario').submit(pesquisarFilme);
- document.getElementById('formulario').addEventListener('submit', pesquisarFilme);
+document.getElementById('formulario').addEventListener('submit', pesquisarFilme);
 
 ListarFilmesWeek();
 
-function SalvarFilmesWeek(i, id)
+function AdicionarFilmesWeek(i, id)
 {
   var codigo = filmesWeek[i].id
   var titulo = filmesWeek[i].title
-  var origtitulo = filmesWeek[i].original_title
+  var tituloOriginal = filmesWeek[i].original_title
   var indice_selecionado = -1;
 
-  var storageLocal = localStorage.getItem("storageLocal"); 
+  var storageLocal = localStorage.getItem("storageLocal"); // Recupera os dados armazenados
 
-  storageLocal = JSON.parse(storageLocal);
-  if (storageLocal == null) 
+  storageLocal = JSON.parse(storageLocal); // Converte string para objeto
+
+  if (storageLocal == null) // Caso não haja conteúdo, iniciaremos um vetor vazio para popular
     storageLocal = [];
 
   var filme = GetFilme("Codigo", codigo);
 
     if (filme != null) {
-      alert("Filme já cadastrado em sua lista de Favoritos.");
+      alert("Filme já cadastrado.");
       return;
     }
 
     var filme = JSON.stringify({
       Codigo   : codigo,
       Titulo   : titulo,
-      OriginalTitulo    : origtitulo
+      OriginalTitulo    : tituloOriginal
 
     });
 
@@ -76,7 +76,7 @@ function SalvarFilmesWeek(i, id)
 
     localStorage.setItem("storageLocal", JSON.stringify(storageLocal));
 
-    alert("Filme adicionado em Favoritos.");
+    alert("Filme adicionado.");
     return true;
 
   function GetFilme(propriedade, valor)
@@ -130,7 +130,7 @@ function ExcluirFilmesWeek(i, id)
   storageLocalE = JSON.parse(storageLocalE);
   
   if (storageLocalE == null) {
-      alert ("");
+      alert ("LocalStorage vazio");
       return true;
   }
  
@@ -138,13 +138,13 @@ function ExcluirFilmesWeek(i, id)
   var indice_selecionado = eliminar
 
   if (filme == null) {
-    alert("");
+    alert("Filme não Favoritado.");
     return true;
   } else {
     
       storageLocalE.splice(indice_selecionado, 1);
       localStorage.setItem("storageLocal", JSON.stringify(storageLocalE));
-      alert("Filme removido dos Favoritos!");
+      alert("Filme removido!");
       return true;
       }
   

@@ -19,7 +19,7 @@ mostrarFilme += `
     				 <p class="card-text">${filmes[i].title}</p>
     					<div class="btn-group">
                       		 <button onclick="SalvarFilmesPesquisados(${i}, ${filmes[i].id})" type="submit" class="btn btn-sm btn-primary">Assistir</button>
-							 <button onclick="Excluir(${i}, ${filmes[i].id})" type="submit" class='btn btn-danger btnExcluir'>Assistido</button>
+							 <button onclick="ApagarFilmesPesquisados(${i}, ${filmes[i].id})" type="submit" class="btn btn-sm btn-success">Assistido</button>
                     	</div>
               
 
@@ -38,30 +38,30 @@ mostrarFilme += `
 
 buscarFilmes();
 
-ListarFilmesPesquisados();
+ListarE();
 function SalvarFilmesPesquisados(i, id){
   var codigo = filmes[i].id;
   var titulo = filmes[i].title
-  var tituloOriginal = filmes[i].original_title
+  var origtitulo = filmes[i].original_title
 
-  var storageLocal = localStorage.getItem("storageLocal"); 
+  var storageLocal = localStorage.getItem("storageLocal"); // Recupera os dados armazenados
 
-  storageLocal = JSON.parse(storageLocal); 
+  storageLocal = JSON.parse(storageLocal); // Converte string para objeto
 
-  if (storageLocal == null) 
+  if (storageLocal == null) // Caso não haja conteúdo, iniciaremos um vetor vazio para popular
     storageLocal = [];
 
   var filme = GetFilme("Codigo", codigo);
 
     if (filme != null){
-      alert("Filme já cadastrado em sua lista de Favoritos.");
+      alert("Filme já cadastrado na lista de Favoritos.");
       return;
     }
 
     var filme = JSON.stringify({
       Codigo   : codigo,
       Titulo   : titulo,
-      OriginalTitulo    : tituloOriginal
+      OriginalTitulo    : origtitulo
 
     });
 
@@ -69,7 +69,7 @@ function SalvarFilmesPesquisados(i, id){
 
     localStorage.setItem("storageLocal", JSON.stringify(storageLocal));
 
-    alert("Filme adicionado em sua lista de Favoritos.");
+    alert("Filme adicionado.");
     return true;
 
     function GetFilme(propriedade, valor){
@@ -83,7 +83,7 @@ function SalvarFilmesPesquisados(i, id){
   }
 }
 
-function ListarFilmesPesquisados()
+function ListarE()
 {
     var storageLocal = localStorage.getItem("storageLocal");
     storageLocal = JSON.parse(storageLocal);
@@ -103,7 +103,7 @@ function ListarFilmesPesquisados()
 
      for (var i in storageLocal) {
       var filme = JSON.parse(storageLocal[i]);
-        $("#listaFavorito tbody").append("<tr>" +
+       $("#listaFavorito tbody").append("<tr>" +
                     "   <td>"+filme.Codigo+"<span class='codigo' style='display: none;'>"+filme.Codigo+"</span></td>" +
                     "   <td>"+filme.Titulo+"</td>" +
                     "   <td>"+filme.OriginalTitulo+"</td>" +
@@ -115,7 +115,8 @@ function ListarFilmesPesquisados()
      }
 
 }
-function ApagarFilmesPesquisados(i, id) {
+function ApagarFilmesPesquisados(i, id)
+{
   var codigo = filmes[i].id
   var storageLocalE = localStorage.getItem("storageLocal");
   storageLocalE = JSON.parse(storageLocalE);
@@ -128,7 +129,18 @@ function ApagarFilmesPesquisados(i, id) {
   var filme = BuscaFilme("Codigo", codigo);
   var indice_selecionado = eliminar
 
-  function BuscaFilme(propriedade, valor)
+  if (filme == null) {
+    alert("Filme não Favoritado.");
+    return;
+  } else {
+      //alert ("Codigo: " + codigo);
+      storageLocalE.splice(indice_selecionado, 1);
+      localStorage.setItem("storageLocal", JSON.stringify(storageLocalE));
+      alert("Filme removido.");
+      return true;
+      }
+  
+    function BuscaFilme(propriedade, valor)
     {
       var filme = null;
         for (var item in storageLocalE) {
@@ -140,7 +152,7 @@ function ApagarFilmesPesquisados(i, id) {
           }
         }
         return filme, eliminar;
-    }
+        }
 }
 
 $('.btnExcluir').click(function(){
